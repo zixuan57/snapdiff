@@ -1,5 +1,5 @@
 ﻿import pc from "picocolors";
-import { listBaselines, loadConfig } from "@snapdiff/core";
+import { listBaselines, loadConfig } from "../core/index.js";
 
 export async function statusCommand() {
   const cwd = process.cwd();
@@ -57,4 +57,5 @@ export async function statusCommand() {
   console.log(pc.dim("  提示: 修改代码后运行 npx snapdiff diff 进行对比"));
   console.log();
 }
+
 

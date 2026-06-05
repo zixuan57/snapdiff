@@ -1,4 +1,4 @@
-﻿import { ensureDirs, captureSnapshot, baselineImagePath, saveBaselineMeta } from "@snapdiff/core";
+﻿import { ensureDirs, captureSnapshot, baselineImagePath, saveBaselineMeta } from "../core/index.js";
 import path from "node:path";
 import { writeFile, mkdir, readFile, appendFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -154,4 +154,5 @@ function printNextSteps(cwd: string) {
   console.log(`    ▸ 非交互式初始化  ${pc.bold("npx snapdiff init --yes")}`);
   console.log();
 }
+
 

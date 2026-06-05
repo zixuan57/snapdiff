@@ -1,4 +1,4 @@
-﻿import { ensureDirs, captureSnapshotsParallel, captureSnapshot, baselineImagePath, saveBaselineMeta, loadConfig } from "@snapdiff/core";
+﻿import { ensureDirs, captureSnapshotsParallel, captureSnapshot, baselineImagePath, saveBaselineMeta, loadConfig } from "../core/index.js";
 import pc from "picocolors";
 
 export async function captureCommand(
@@ -60,4 +60,5 @@ export async function captureCommand(
   await saveBaselineMeta(cwd, snap.name, meta);
   console.log(pc.green(`  ✔ ${url} ── 基线已保存`));
 }
+
 

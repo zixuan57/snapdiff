@@ -2,7 +2,7 @@
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { baselineImagePath, ensureDirs, captureSnapshot, saveBaselineMeta, loadConfig, baselineExists } from "@snapdiff/core";
+import { baselineImagePath, ensureDirs, captureSnapshot, saveBaselineMeta, loadConfig, baselineExists } from "../core/index.js";
 
 export async function approveCommand(name: string) {
   const cwd = process.cwd();
@@ -53,4 +53,5 @@ export async function approveCommand(name: string) {
     console.log(pc.red(`  ✗ 接受失败: ${msg}`));
   }
 }
+
 

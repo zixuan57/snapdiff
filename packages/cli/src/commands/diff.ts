@@ -14,7 +14,7 @@ import {
   generateHtmlReport,
   baselineExists,
   makePercentBar,
-} from "@snapdiff/core";
+} from "../core/index.js";
 
 const TEMP_DIR = ".snapdiff/tmp";
 
@@ -212,3 +212,4 @@ export async function diffCommand(
 
   console.log(pc.cyan("\n  \ud83d\udcca HTML \u62a5\u544a: " + htmlPath));
 }
+
