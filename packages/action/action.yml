@@ -1,0 +1,15 @@
+﻿# snapdiff GitHub Action
+name: "snapdiff"
+description: "Visual regression testing with Playwright"
+author: "snapdiff"
+inputs:
+  threshold:
+    description: "差异阈值百分比"
+    default: "0.1"
+    required: false
+runs:
+  using: "node20"
+  main: "dist/index.js"
+branding:
+  icon: "camera"
+  color: "blue"

@@ -1,0 +1,21 @@
+﻿{
+  "name": "snapdiff-action",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "package": "npx @vercel/ncc build src/index.ts -o dist"
+  },
+  "dependencies": {
+    "@actions/core": "^1.11.0",
+    "@actions/github": "^6.0.0",
+    "@snapdiff/core": "*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0",
+    "@vercel/ncc": "^0.38.0"
+  }
+}

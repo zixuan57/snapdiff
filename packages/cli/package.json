@@ -1,0 +1,50 @@
+{
+  "name": "snapdiff-cli",
+  "version": "0.1.5",
+  "description": "????????????????????????? Playwright + pixelmatch",
+  "type": "module",
+  "bin": {
+    "snapdiff": "dist/index.js"
+  },
+  "files": [
+    "dist/",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "playwright": "^1.52.0",
+    "pixelmatch": "^6.0.0",
+    "pngjs": "^7.0.0",
+    "commander": "^13.0.0",
+    "picocolors": "^1.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/pngjs": "^6.0.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zixuan57/snapdiff.git"
+  },
+  "homepage": "https://github.com/zixuan57/snapdiff",
+  "bugs": {
+    "url": "https://github.com/zixuan57/snapdiff/issues"
+  },
+  "license": "MIT",
+  "keywords": [
+    "visual-regression",
+    "testing",
+    "playwright",
+    "screenshot",
+    "diff",
+    "cli"
+  ]
+}

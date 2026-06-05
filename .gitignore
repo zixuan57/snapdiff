@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.snapdiff/diffs/
+.snapdiff/reports/
+*.log
+.DS_Store
+
+.snapdiff/
+.git-repo/
+test-import.ts
+.git-repo/
