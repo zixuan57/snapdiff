@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "@snapdiff/core",
   "version": "0.1.0",
   "private": true,
@@ -13,7 +13,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsc --watch"
+    "dev": "tsc --watch",
+    "test": "vitest run"
   },
   "dependencies": {
     "playwright": "^1.52.0",
@@ -23,6 +24,7 @@
   "devDependencies": {
     "@types/node": "^22.0.0",
     "@types/pngjs": "^6.0.0",
-    "typescript": "^5.7.0"
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
   }
 }

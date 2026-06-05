@@ -1,4 +1,5 @@
-﻿import path from "node:path";
+﻿import { ensureDirs, captureSnapshot, baselineImagePath, saveBaselineMeta } from "@snapdiff/core";
+import path from "node:path";
 import { writeFile, mkdir, readFile, appendFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import pc from "picocolors";
@@ -105,7 +106,6 @@ async function setupGitignore(cwd: string) {
 }
 
 async function takeFirstBaseline(cwd: string, configPath: string) {
-  const { ensureDirs, captureSnapshot, baselineImagePath, saveBaselineMeta } = await import("@snapdiff/core");
   const config = JSON.parse(await readFile(configPath, "utf-8"));
 
   await ensureDirs(cwd);

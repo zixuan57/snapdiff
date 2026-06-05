@@ -11,8 +11,6 @@ export interface ProjectConfig {
 }
 
 const CONFIG_FILES = [
-  "snapdiff.config.ts",
-  "snapdiff.config.js",
   "snapdiff.config.json",
   ".snapdiffrc",
   ".snapdiffrc.json",

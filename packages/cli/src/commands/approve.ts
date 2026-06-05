@@ -2,11 +2,10 @@
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { join } from "node:path";
-import { baselineImagePath, ensureDirs, captureSnapshot, saveBaselineMeta, loadConfig } from "../core/index.js";
+import { baselineImagePath, ensureDirs, captureSnapshot, saveBaselineMeta, loadConfig, baselineExists } from "@snapdiff/core";
 
 export async function approveCommand(name: string) {
   const cwd = process.cwd();
-  const { baselineExists } = await import("@snapdiff/core");
 
   if (!(await baselineExists(cwd, name))) {
     console.log(pc.yellow(`⚠  "${name}" 没有基线截图，无法接受。`));

@@ -1,15 +1,26 @@
-﻿# snapdiff GitHub Action
-name: "snapdiff"
-description: "Visual regression testing with Playwright"
-author: "snapdiff"
+name: 'snapdiff'
+description: 'Visual regression testing ? compare screenshots with Playwright'
+author: 'zixuan57'
+branding:
+  icon: 'camera'
+  color: 'blue'
 inputs:
   threshold:
-    description: "差异阈值百分比"
-    default: "0.1"
+    description: '???????'
+    default: '0.1'
     required: false
 runs:
-  using: "node20"
-  main: "dist/index.js"
-branding:
-  icon: "camera"
-  color: "blue"
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Install Playwright browsers
+      shell: bash
+      run: npx playwright install chromium
+
+    - name: Run visual regression tests
+      shell: bash
+      run: npx snapdiff-cli diff -t ${{ inputs.threshold }} 

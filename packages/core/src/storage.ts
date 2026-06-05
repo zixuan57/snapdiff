@@ -7,12 +7,14 @@ import { BaselineMeta } from "./types.js";
 const BASELINE_DIR = ".snapdiff/baselines";
 const DIFF_DIR = ".snapdiff/diffs";
 const CONFIG_DIR = ".snapdiff";
+const TMP_DIR = ".snapdiff/tmp";
 
 export async function ensureDirs(cwd: string) {
   const dirs = [
     join(cwd, CONFIG_DIR),
     join(cwd, BASELINE_DIR),
     join(cwd, DIFF_DIR),
+    join(cwd, TMP_DIR),
   ];
   for (const dir of dirs) {
     if (!existsSync(dir)) {

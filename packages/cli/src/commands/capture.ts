@@ -1,10 +1,4 @@
-﻿import {
-  ensureDirs,
-  captureSnapshotsParallel,
-  baselineImagePath,
-  saveBaselineMeta,
-  loadConfig,
-} from "../core/index.js";
+﻿import { ensureDirs, captureSnapshotsParallel, captureSnapshot, baselineImagePath, saveBaselineMeta, loadConfig } from "@snapdiff/core";
 import pc from "picocolors";
 
 export async function captureCommand(
@@ -50,7 +44,6 @@ export async function captureCommand(
   }
 
   await ensureDirs(cwd);
-  const { captureSnapshot } = await import("@snapdiff/core");
   const snap = {
     name: options.name,
     url,

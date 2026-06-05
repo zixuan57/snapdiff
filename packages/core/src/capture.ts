@@ -9,10 +9,7 @@ export interface CaptureOptions {
 export interface CaptureResult {
   imagePath: string;
   meta: BaselineMeta;
-}
-
-function prefixLines(msg: string): string {
-  return msg.replace(/^/gm, "  ");
+  error?: string;
 }
 
 export async function captureSnapshot(
@@ -23,7 +20,7 @@ export async function captureSnapshot(
 
   let browser: Browser | null = null;
   try {
-    browser = await chromium.launch({ headless: true });
+    browser = await chromium.launch({ headless: config.headless ?? true });
     const page = await browser.newPage({ viewport });
 
     await page.goto(config.url, {
@@ -37,7 +34,7 @@ export async function captureSnapshot(
 
     await page.waitForTimeout(500);
 
-    const screenshotBuffer = await page.screenshot({ fullPage: false, type: "png" });
+    const screenshotBuffer = await page.screenshot({ fullPage: config.fullPage ?? false, type: "png" });
 
     const { writeFile } = await import("node:fs/promises");
     await writeFile(outputPath, screenshotBuffer);
@@ -47,6 +44,7 @@ export async function captureSnapshot(
       url: config.url,
       viewport,
       selector: config.selector,
+      fullPage: config.fullPage,
       capturedAt: new Date().toISOString(),
       contentHash: simpleHash(screenshotBuffer),
     };
@@ -55,21 +53,21 @@ export async function captureSnapshot(
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     if (msg.includes("ERR_CONNECTION_REFUSED") || msg.includes("ENOTFOUND") || msg.includes("ERR_NAME_NOT_RESOLVED")) {
-      throw new Error(`无法访问 ${config.url}，请检查页面是否已启动或 URL 是否正确`);
+      throw new Error(`\u65e0\u6cd5\u8bbf\u95ee ${config.url}\uff0c\u8bf7\u68c0\u67e5\u9875\u9762\u662f\u5426\u5df2\u542f\u52a8\u6216 URL \u662f\u5426\u6b63\u786e`);
     }
     if (msg.includes("ERR_CONNECTION_TIMEOUT") || msg.includes("ERR_TIMED_OUT") || msg.includes("timeout")) {
-      throw new Error(`访问 ${config.url} 超时（30 秒），页面可能加载过慢`);
+      throw new Error(`\u8bbf\u95ee ${config.url} \u8d85\u65f6\uff0830 \u79d2\uff09\uff0c\u9875\u9762\u53ef\u80fd\u52a0\u8f7d\u8fc7\u6162`);
     }
     if (msg.includes("ERR_ABORTED")) {
-      throw new Error(`对 ${config.url} 的请求被中断，请检查页面是否被重定向或拦截`);
+      throw new Error(`\u5bf9 ${config.url} \u7684\u8bf7\u6c42\u88ab\u4e2d\u65ad\uff0c\u8bf7\u68c0\u67e5\u9875\u9762\u662f\u5426\u88ab\u91cd\u5b9a\u5411\u6216\u62e6\u622a`);
     }
     if (msg.includes("waitForSelector") || (msg.includes("Timeout") && config.selector)) {
-      throw new Error(`等待选择器 "${config.selector}" 超时，该元素在页面中未找到`);
+      throw new Error(`\u7b49\u5f85\u9009\u62e9\u5668 "${config.selector}" \u8d85\u65f6\uff0c\u8be5\u5143\u7d20\u5728\u9875\u9762\u4e2d\u672a\u627e\u5230`);
     }
     if (msg.includes("spawn EACCES") || msg.includes("spawn EPERM") || msg.includes("spawn ENOTDIR")) {
-      throw new Error(`浏览器进程启动失败（权限不足），请重新安装 Chromium:\n  npx playwright install chromium`);
+      throw new Error(`\u6d4f\u89c8\u5668\u8fdb\u7a0b\u542f\u52a8\u5931\u8d25\uff08\u6743\u9650\u4e0d\u8db3\uff09\uff0c\u8bf7\u91cd\u65b0\u5b89\u88c5 Chromium:\n  npx playwright install chromium`);
     }
-    throw new Error(`截图失败: ${msg}`);
+    throw new Error(`\u622a\u56fe\u5931\u8d25: ${msg}`);
   } finally {
     if (browser) await browser.close().catch(() => {});
   }
@@ -79,18 +77,29 @@ export async function captureSnapshotsParallel(
   snaps: Array<{ config: SnapConfig; outputPath: string }>,
   concurrency: number = 3
 ): Promise<CaptureResult[]> {
-  const results: CaptureResult[] = [];
-  const queue = [...snaps];
+  const results: CaptureResult[] = new Array(snaps.length);
+  const queue = snaps.map((snap, index) => ({ ...snap, index }));
 
   async function worker(): Promise<void> {
     while (queue.length > 0) {
       const item = queue.shift()!;
       try {
         const result = await captureSnapshot(item);
-        results.push(result);
+        results[item.index] = result;
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
-        console.error(`  ✗ ${item.config.name}: ${msg}`);
+        console.error(`  \u2717 ${item.config.name}: ${msg}`);
+        results[item.index] = {
+          imagePath: "",
+          meta: {
+            name: item.config.name,
+            url: item.config.url,
+            viewport: item.config.viewport ?? { width: 1440, height: 900 },
+            capturedAt: "",
+            contentHash: "",
+          },
+          error: msg,
+        };
       }
     }
   }

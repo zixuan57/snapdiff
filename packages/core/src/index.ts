@@ -14,3 +14,4 @@ export {
   listBaselines,
 } from "./storage.js";
 export { generateTextReport, generateReportSummary, generateHtmlReport } from "./reporter.js";
+export { makePercentBar } from "./reporter.js";

@@ -16,6 +16,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
+    "@snapdiff/core": "*",
     "playwright": "^1.52.0",
     "pixelmatch": "^6.0.0",
     "pngjs": "^7.0.0",

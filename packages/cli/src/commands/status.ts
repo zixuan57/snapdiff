@@ -1,5 +1,5 @@
 ﻿import pc from "picocolors";
-import { listBaselines, loadConfig } from "../core/index.js";
+import { listBaselines, loadConfig } from "@snapdiff/core";
 
 export async function statusCommand() {
   const cwd = process.cwd();

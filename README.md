@@ -19,6 +19,8 @@
 - PR 提交前自动对比视觉差异
 - CI 流水线中集成视觉回归检查
 
+<img src="https://raw.githubusercontent.com/zixuan57/snapdiff/main/packages/cli/demo.svg" alt="snapdiff demo" width="800">
+
 ---
 
 ## 快速开始
