@@ -1,7 +1,7 @@
-{
+﻿{
   "name": "snapdiff-cli",
   "version": "0.1.7",
-  "description": "????????????????????????? Playwright + pixelmatch",
+  "description": "snapdiff - Visual regression testing CLI powered by Playwright + pixelmatch",
   "type": "module",
   "bin": {
     "snapdiff": "dist/index.js"
