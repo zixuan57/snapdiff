@@ -1,13 +1,41 @@
 name: 'snapdiff'
-description: 'Visual regression testing ? compare screenshots with Playwright'
+description: 'Visual regression testing - compare screenshots with Playwright'
 author: 'zixuan57'
 branding:
   icon: 'camera'
   color: 'blue'
 inputs:
+  mode:
+    description: 'Operation mode: "diff" (compare screenshots) or "capture" (take new baseline)'
+    default: 'diff'
+    required: false
   threshold:
-    description: '???????'
+    description: 'Pixel difference threshold (0-1, e.g. 0.1 = 10%)'
     default: '0.1'
+    required: false
+  name:
+    description: 'Snapshot name to use (baseline name)'
+    required: false
+  config:
+    description: 'Path to snapdiff config file'
+    required: false
+  url:
+    description: 'URL to capture (capture mode only)'
+    required: false
+  viewport:
+    description: 'Viewport size (e.g. "1280x720")'
+    required: false
+  full-page:
+    description: 'Capture full page (true/false)'
+    default: 'false'
+    required: false
+  headless:
+    description: 'Run browser in headless mode (true/false)'
+    default: 'true'
+    required: false
+  output:
+    description: 'Output directory for screenshots and reports'
+    default: '.snapdiff'
     required: false
 runs:
   using: 'composite'
@@ -16,11 +44,39 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version: 20
-
+    - name: Cache Playwright browsers
+      id: playwright-cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/ms-playwright
+        key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-playwright-
     - name: Install Playwright browsers
+      if: steps.playwright-cache.outputs.cache-hit != 'true'
       shell: bash
       run: npx playwright install chromium
-
-    - name: Run visual regression tests
+    - name: Run snapdiff capture
+      if: inputs.mode == 'capture'
       shell: bash
-      run: npx snapdiff-cli diff -t ${{ inputs.threshold }} 
+      run: |
+        npx snapdiff-cli capture \
+          ${{ inputs.name }} \
+          ${{ inputs.url }} \
+          ${{ inputs.viewport }} \
+          ${{ inputs.full-page }} \
+          ${{ inputs.headless }} \
+          ${{ inputs.config }} \
+          -o ${{ inputs.output }}
+    - name: Run snapdiff diff
+      if: inputs.mode != 'capture'
+      shell: bash
+      run: |
+        npx snapdiff-cli diff \
+          ${{ inputs.name }} \
+          -t ${{ inputs.threshold }} \
+          ${{ inputs.viewport }} \
+          ${{ inputs.full-page }} \
+          ${{ inputs.headless }} \
+          ${{ inputs.config }} \
+          -o ${{ inputs.output }}
