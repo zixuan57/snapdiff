@@ -96,7 +96,7 @@ npx snapdiff-cli diff https://example.com --name my-page
 npx snapdiff-cli diff -t 0.5
 ```
 
-运行后自动生成 **HTML 报告** 到 `.snapdiff/reports/` 目录，可直接用浏览器打开查看。
+运行后自动生成 **HTML 报告** 到 `.snapdiff/reports/` 目录，报告包含基线/当前/差异三列并排对比图，可直接用浏览器打开查看。相隔 7 天以上的旧文件会自动清理。
 
 ### `approve`
 
@@ -161,6 +161,9 @@ npx snapdiff-cli status
 | `selector` | string | 否 | 等待该 CSS 选择器出现后再截图 |
 | `viewport` | object | 否 | 视口大小，默认 `{ width: 1440, height: 900 }` |
 | `threshold` | number | 否 | 差异阈值百分比，默认 `0.1`，超出则判定失败 |
+| `fullPage` | boolean | 否 | 是否截取全页截图，默认 `false` |
+| `headless` | boolean | 否 | 是否使用无头浏览器，默认 `true` |
+| `maskRegions` | array | 否 | 遮罩区域数组，格式 `[{ x, y, width, height }]`，这些区域不参与差异对比 |
 
 ---
 
@@ -169,15 +172,16 @@ npx snapdiff-cli status
 ```
 项目根目录/
 ├── snapdiff.config.json       # 配置文件
-├── .gitignore                 # 自动添加 .snapdiff/diffs/ 和 .snapdiff/reports/
+├── .gitignore                 # 自动添加 .snapdiff/diffs/、.snapdiff/reports/ 和 .snapdiff/tmp/
 └── .snapdiff/
     ├── baselines/              # 基线截图（需纳入 git 管理）
     │   ├── homepage.png
     │   └── homepage.json       # 元数据（URL、视口、时间等）
     ├── diffs/                  # 差异对比图（已加入 .gitignore）
     │   └── homepage-1234567890-diff.png
-    └── reports/                # HTML 报告（已加入 .gitignore）
-        └── report-1234567890.html
+    ├── reports/                # HTML 报告（已加入 .gitignore）
+    │   └── report-1234567890.html
+    └── tmp/                      # 临时截图文件（已加入 .gitignore）
 ```
 
 基线截图纳入 git 管理，这样 PR diff 里可以直接看到图片变化。差异图和报告不纳入 git。

@@ -9,3 +9,5 @@ dist/
 .git-repo/
 test-import.ts
 .git-repo/
+_update_readme.py  
+snapdiff.skill.md  
