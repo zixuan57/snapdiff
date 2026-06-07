@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>snapdiff - Visual Regression Testing</title>
+  <meta name="description" content="snapdiff: a zero-config CLI for visual regression testing. Powered by Playwright + pixelmatch.">
+  <style>
+    :root { --bg: #f8f9fa; --card: #fff; --accent: #3b82f6; --text: #1a1a2e; --muted: #6b7280; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    .hero { text-align: center; padding: 80px 24px 60px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #fff; }
+    .hero h1 { font-size: 3rem; margin-bottom: 12px; }
+    .hero h1 span { color: var(--accent); }
+    .hero p { font-size: 1.2rem; color: #94a3b8; max-width: 600px; margin: 0 auto 32px; }
+    .hero .badge { display: inline-block; margin: 0 4px; }
+    .cta { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: #fff; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 1rem; transition: background .2s; }
+    .cta:hover { background: #2563eb; }
+    .section { max-width: 900px; margin: 0 auto; padding: 60px 24px; }
+    .section h2 { font-size: 1.8rem; margin-bottom: 24px; }
+    .feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .feature-card { background: var(--card); border: 1px solid #e5e7eb; border-radius: 8px; padding: 24px; }
+    .feature-card h3 { font-size: 1.1rem; margin-bottom: 8px; }
+    .feature-card p { color: var(--muted); font-size: .9rem; }
+    .code-block { background: #1e293b; color: #e2e8f0; padding: 20px; border-radius: 8px; font-family: 'Fira Code', monospace; font-size: .9rem; overflow-x: auto; margin: 16px 0; }
+    footer { text-align: center; padding: 40px; color: var(--muted); font-size: .9rem; }
+  </style>
+</head>
+<body>
+  <div class="hero">
+    <h1>snap<span>diff</span></h1>
+    <p>Zero-config CLI for visual regression testing. One command to capture, one command to compare.</p>
+    <div style="margin-bottom:24px;">
+      <a href="https://www.npmjs.com/package/snapdiff-cli"><img src="https://img.shields.io/npm/v/snapdiff-cli" alt="npm version" class="badge"></a>
+      <a href="https://www.npmjs.com/package/snapdiff-cli"><img src="https://img.shields.io/npm/dm/snapdiff-cli" alt="npm downloads" class="badge"></a>
+      <img src="https://img.shields.io/github/actions/workflow/status/zixuan57/snapdiff/ci.yml?branch=main" alt="CI" class="badge">
+      <img src="https://img.shields.io/badge/license-MIT-blue" alt="license" class="badge">
+    </div>
+    <a class="cta" href="https://github.com/zixuan57/snapdiff">View on GitHub</a>
+  </div>
+
+  <div class="section">
+    <h2>Quick Start</h2>
+    <div class="code-block">
+npx snapdiff-cli init<br>
+npx snapdiff-cli diff<br>
+npx snapdiff-cli status
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Features</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h3>Zero Config</h3>
+        <p>Run <code>snapdiff init</code> and it sets everything up automatically.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Pixel-Level Diff</h3>
+        <p>Powered by pixelmatch, accurate to the individual pixel.</p>
+      </div>
+      <div class="feature-card">
+        <h3>HTML Report</h3>
+        <p>Side-by-side comparison with baseline, current, and diff overlay.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Parallel Capture</h3>
+        <p>Captures multiple pages in parallel with 3 concurrent workers.</p>
+      </div>
+      <div class="feature-card">
+        <h3>CI Ready</h3>
+        <p>Works in any CI pipeline. GitHub Action included.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Mask Regions</h3>
+        <p>Exclude dynamic areas like ads or animations from comparison.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Demo Report</h2>
+    <p style="margin-bottom:16px;">The SVG below shows what a typical snapdiff HTML report looks like. You get baseline, current, and diff side-by-side.</p>
+    <img src="https://raw.githubusercontent.com/zixuan57/snapdiff/main/packages/cli/demo.svg" alt="snapdiff demo report" style="width:100%;max-width:800px;border-radius:8px;border:1px solid #e5e7eb;">
+  </div>
+
+  <footer>
+    MIT License &middot; Built with Playwright + pixelmatch + pngjs
+  </footer>
+</body>
+</html>

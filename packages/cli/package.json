@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "snapdiff-cli",
   "version": "0.1.7",
   "description": "snapdiff - Visual regression testing CLI powered by Playwright + pixelmatch",
@@ -41,10 +41,16 @@
   "license": "MIT",
   "keywords": [
     "visual-regression",
-    "testing",
-    "playwright",
+    "visual-testing",
     "screenshot",
     "diff",
-    "cli"
+    "playwright",
+    "pixelmatch",
+    "cli",
+    "testing",
+    "regression-testing",
+    "ui-testing",
+    "e2e",
+    "automation"
   ]
 }

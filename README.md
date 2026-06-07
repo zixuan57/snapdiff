@@ -1,6 +1,6 @@
 <p align="center">
   <h1 align="center">snapdiff</h1>
-  <p align="center">一行命令的视觉回归测试工具</p>
+  <p align="center">Zero-config CLI for visual regression testing. Powered by <a href="https://playwright.dev">Playwright</a> + <a href="https://github.com/mapbox/pixelmatch">pixelmatch</a>.</p>
   <p align="center">
     <a href="https://www.npmjs.com/package/snapdiff-cli"><img src="https://img.shields.io/npm/v/snapdiff-cli" alt="npm version"></a>
     <a href="https://www.npmjs.com/package/snapdiff-cli"><img src="https://img.shields.io/npm/dm/snapdiff-cli" alt="npm downloads"></a>
@@ -11,132 +11,128 @@
 
 ---
 
-## 概述
+snapdiff is a visual regression testing CLI. Take a baseline screenshot before you change code, then compare after ? it tells you **what changed and by how much**, with an interactive HTML report.
 
-**snapdiff** 是一个基于 Playwright + pixelmatch 的视觉回归测试工具。你在改代码前截一张基线截图，改完代码后再截一张，它会告诉你**哪些地方变了、变了多少**，并生成可直观对比的 HTML 报告。
-
-**snapdiff** is a visual regression testing CLI built on Playwright + pixelmatch. Take a baseline screenshot before making changes, then compare after — it tells you **what changed and by how much**, with an interactive HTML report.
-
-适合场景：
-
-- 改 CSS/组件后检查是否有意外的布局变化
-- PR 提交前自动对比视觉差异
-- CI 流水线中集成视觉回归检查
+**Ideal for:**
+- Checking for unintended layout changes after CSS/component edits
+- Automated visual diff on every PR
+- CI pipeline integration
 
 <img src="https://raw.githubusercontent.com/zixuan57/snapdiff/main/packages/cli/demo.svg" alt="snapdiff demo" width="800">
 
 ---
 
-## 快速开始
+## Quick Start
 
 ```bash
-# 初始化项目（交互式向导，自动完成首次截图）
+# Initialize (interactive wizard, auto-captures first baseline)
 npx snapdiff-cli init
 
-# 修改代码后，对比变化
+# After code changes, compare against baseline
 npx snapdiff-cli diff
 
-# 查看基线状态
+# Check baseline status
 npx snapdiff-cli status
 
-# 确认变更，更新基线
+# Accept changes as new baseline
 npx snapdiff-cli approve <name>
 ```
 
-第一次运行 `init` 会自动：
+Running `init` for the first time will:
 
-1. 创建配置文件 `snapdiff.config.json`
-2. 截取首张基线截图
-3. 将 `.snapdiff/diffs/` 和 `.snapdiff/reports/` 加入 `.gitignore`
+1. Create `snapdiff.config.json`
+2. Take the first baseline screenshot automatically
+3. Add `.snapdiff/diffs/` and `.snapdiff/reports/` to `.gitignore`
 
 ---
 
-## 命令参考
+## Features
+
+| Feature | Description |
+|---------|-------------|
+| **Zero config** | `snapdiff init` sets up everything ? config file, first capture, .gitignore |
+| **Pixel-level diff** | Uses [pixelmatch](https://github.com/mapbox/pixelmatch) for accurate comparison |
+| **HTML report** | Side-by-side view of baseline / current / diff, auto-generated |
+| **Parallel capture** | Captures 3 pages concurrently |
+| **Mask regions** | Exclude dynamic areas (ads, animations) from comparison |
+| **CI ready** | Built-in GitHub Action, works with any CI pipeline |
+| **Multi-page** | Capture and diff entire site configurations from a single config file |
+| **Auto-cleanup** | Old reports older than 7 days are removed automatically |
+
+---
+
+## Commands
 
 ### `init`
 
-初始化 snapdiff 配置（交互式向导，自动完成首次截图）。
+Initialize a snapdiff project (interactive wizard, auto-captures first screenshot).
 
 ```bash
-npx snapdiff-cli init              # 交互式
-npx snapdiff-cli init --yes         # 非交互式，使用默认值
-npx snapdiff-cli init --yes --ci    # 非交互式 + 生成 CI 配置文件
+npx snapdiff-cli init              # Interactive
+npx snapdiff-cli init --yes         # Non-interactive, use defaults
+npx snapdiff-cli init --yes --ci    # Non-interactive + generate CI config
 ```
 
-如果 stdin 不是终端（例如在 CI 环境中），`init` 会自动切换为非交互模式。
+`init` auto-detects whether stdin is a terminal. In CI environments (non-TTY), it switches to non-interactive mode automatically.
 
 ### `capture`
 
-截取当前页面作为基线截图。
+Capture and save baseline screenshots.
 
 ```bash
-# 从配置文件批量截取
+# Capture all pages from the config file
 npx snapdiff-cli capture
 
-# 截取单个页面
+# Capture a single page
 npx snapdiff-cli capture https://example.com --name my-page
 
-# 指定选择器：等待元素出现后再截图
+# Wait for a CSS selector to appear before capturing
 npx snapdiff-cli capture https://example.com --name home --selector "#app-root"
 
-# 自定义视口大小
+# Custom viewport
 npx snapdiff-cli capture https://example.com --name mobile -w 375 -h 812
 ```
 
-多页面模式下自动 **3 并发** 并行截图。
+Multi-page mode uses **3 concurrent workers** automatically.
 
 ### `diff`
 
-对比当前页面与基线截图。
+Compare current pages against their baselines.
 
 ```bash
-# 对比配置文件中的所有页面（并行截图 + HTML 报告）
+# Diff all pages from the config file
 npx snapdiff-cli diff
 
-# 对比单个页面
+# Diff a single page
 npx snapdiff-cli diff https://example.com --name my-page
 
-# 设置更宽松的阈值（允许 0.5% 以内的差异）
+# Set a more permissive threshold (allow 0.5% diff)
 npx snapdiff-cli diff -t 0.5
 ```
 
-运行后自动生成 **HTML 报告** 到 `.snapdiff/reports/` 目录，报告包含基线/当前/差异三列并排对比图，可直接用浏览器打开查看。相隔 7 天以上的旧文件会自动清理。
+Generates an **HTML report** in `.snapdiff/reports/` with baseline / current / diff side-by-side. Reports older than 7 days are auto-cleaned.
 
 ### `approve`
 
-接受当前差异为新基线（覆盖旧基线）。
+Accept the current diff as the new baseline (overwrites old baseline).
 
 ```bash
 npx snapdiff-cli approve my-page
 ```
 
-即使配置文件中没有定义该页面，也会尝试从基线元数据中恢复 URL。
-
 ### `status`
 
-查看所有基线状态（表格展示）。
+Display all baseline entries in a table.
 
 ```bash
 npx snapdiff-cli status
 ```
 
-输出示例：
-
-```
-  📸 snapdiff 基线状态
-
-  名称                     URL                                      基线时间                   状态
-  ──────────────────────────────────────────────────────────────────────────────────────────
-  homepage                 https://example.com                      2026/6/5 10:30      ✅ 正常
-  pricing                  https://example.com/pricing              2026/6/5 10:31      ✅ 正常
-  dashboard                https://example.com/dashboard            —                     ⚠ 未截取
-```
-
 ---
 
-## 配置文件
+## Config File
 
-在项目根目录创建 `snapdiff.config.json`：
+Create `snapdiff.config.json` in your project root:
 
 ```json
 {
@@ -158,43 +154,47 @@ npx snapdiff-cli status
 }
 ```
 
-| 字段 | 类型 | 必填 | 说明 |
+### Config Fields
+
+| Field | Type | Required | Description |
 |---|---|---|---|
-| `name` | string | 是 | 截图名称，用于标识 |
-| `url` | string | 是 | 页面 URL |
-| `selector` | string | 否 | 等待该 CSS 选择器出现后再截图 |
-| `viewport` | object | 否 | 视口大小，默认 `{ width: 1440, height: 900 }` |
-| `threshold` | number | 否 | 差异阈值百分比，默认 `0.1`，超出则判定失败 |
-| `fullPage` | boolean | 否 | 是否截取全页截图，默认 `false` |
-| `headless` | boolean | 否 | 是否使用无头浏览器，默认 `true` |
-| `maskRegions` | array | 否 | 遮罩区域数组，格式 `[{ x, y, width, height }]`，这些区域不参与差异对比 |
+| `name` | string | Yes | Snapshot name for identification |
+| `url` | string | Yes | Page URL |
+| `selector` | string | No | Wait for CSS selector before capture |
+| `viewport` | object | No | Viewport size, default `{ width: 1440, height: 900 }` |
+| `threshold` | number | No | Diff threshold percentage, default `0.1`. Exceeds threshold = failure |
+| `fullPage` | boolean | No | Capture full scrollable page, default `false` |
+| `headless` | boolean | No | Headless browser mode, default `true` |
+| `maskRegions` | array | No | Mask regions array `[{ x, y, width, height }]`. These areas are excluded from diff comparison |
 
 ---
 
-## 目录结构
+## Directory Structure
 
 ```
-项目根目录/
-├── snapdiff.config.json       # 配置文件
-├── .gitignore                 # 自动添加 .snapdiff/diffs/、.snapdiff/reports/ 和 .snapdiff/tmp/
-└── .snapdiff/
-    ├── baselines/              # 基线截图（需纳入 git 管理）
-    │   ├── homepage.png
-    │   └── homepage.json       # 元数据（URL、视口、时间等）
-    ├── diffs/                  # 差异对比图（已加入 .gitignore）
-    │   └── homepage-1234567890-diff.png
-    ├── reports/                # HTML 报告（已加入 .gitignore）
-    │   └── report-1234567890.html
-    └── tmp/                      # 临时截图文件（已加入 .gitignore）
+project-root/
++-- snapdiff.config.json       # Configuration file
++-- .gitignore                 # Automatically includes .snapdiff/*
++-- .snapdiff/
+    +-- baselines/              # Baseline images (tracked in git)
+    |   +-- homepage.png
+    |   +-- homepage.json       # Metadata (URL, viewport, timestamp)
+    +-- diffs/                  # Diff comparison images (gitignored)
+    |   +-- homepage-1234567890-diff.png
+    +-- reports/                # HTML reports (gitignored)
+    |   +-- report-1234567890.html
+    +-- tmp/                     # Temp screenshots (gitignored)
 ```
 
-基线截图纳入 git 管理，这样 PR diff 里可以直接看到图片变化。差异图和报告不纳入 git。
+Baseline images are tracked in git so that PR diffs show image changes directly. Diff images and reports are gitignored.
 
 ---
 
-## CI 集成
+## CI Integration
 
 ### GitHub Actions
+
+snapdiff ships with a built-in [GitHub Action](https://github.com/zixuan57/snapdiff) that supports both capture and diff modes.
 
 ```yaml
 # .github/workflows/snapdiff.yml
@@ -211,43 +211,72 @@ jobs:
       - run: npx snapdiff-cli diff
 ```
 
-也可以通过 `init --ci` 自动生成：
+Generate this automatically with:
 
 ```bash
 npx snapdiff-cli init --yes --ci
 ```
 
----
+### Other CI
 
-## 技术栈
-
-| 组件 | 用途 |
-|---|---|
-| [Playwright](https://playwright.dev) | 浏览器截图引擎 |
-| [pixelmatch](https://github.com/mapbox/pixelmatch) | 像素级对比 |
-| [pngjs](https://github.com/lukeapage/pngjs) | PNG 图片处理 |
-| [commander](https://github.com/tj/commander.js) | CLI 框架 |
-
----
-
-## 开发
+snapdiff runs anywhere Node.js is available. Just install and run:
 
 ```bash
-git clone <repo>
+npx snapdiff-cli capture   # In a pre-change step
+npx snapdiff-cli diff      # In a post-change step
+```
+
+---
+
+## Comparison
+
+| Feature | snapdiff | Percy | Chromatic | BackstopJS |
+|---------|----------|-------|-----------|------------|
+| **Local CLI** | Free, open-source | Limited (cloud-dependent) | Limited (cloud-dependent) | Free |
+| **SaaS requirement** | None | Required (cloud rendering) | Required (cloud rendering) | None |
+| **Pricing** | Free (open source MIT) | Paid tiers after free quota | Paid tiers after free quota | Free |
+| **Self-hosted** | Yes | No (cloud only) | No (cloud only) | Yes |
+| **HTML report** | Built-in, local | Web dashboard | Web dashboard | Customizable |
+| **Parallel capture** | Yes (3 workers) | Yes | Yes | Yes |
+| **Mask regions** | Yes | Yes | Yes | Limited |
+| **CI integration** | CLI + GitHub Action | GitHub Action + SDK | GitHub App | CLI + Docker |
+| **Setup time** | ~30 seconds | ~5 minutes + account | ~5 minutes + account | ~10 minutes |
+| **Full page capture** | Yes | Yes | Yes | Yes |
+
+---
+
+## Tech Stack
+
+| Component | Purpose |
+|---|---|
+| [Playwright](https://playwright.dev) | Browser automation & screenshot engine |
+| [pixelmatch](https://github.com/mapbox/pixelmatch) | Pixel-level image comparison |
+| [pngjs](https://github.com/lukeapage/pngjs) | PNG image processing |
+| [commander](https://github.com/tj/commander.js) | CLI framework |
+
+---
+
+## Development
+
+```bash
+git clone https://github.com/zixuan57/snapdiff.git
 cd snapdiff
 
-# 依赖已内置于 CLI 包
 cd packages/cli
 npm install
 npm run build
 
-# 本地测试
 node dist/index.js --help
 ```
 
 ---
 
-## 许可证
+## Contributing
+
+Bug reports, feature requests, and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+---
+
+## License
 
 MIT
-

@@ -60,23 +60,9 @@ runs:
       if: inputs.mode == 'capture'
       shell: bash
       run: |
-        npx snapdiff-cli capture \
-          ${{ inputs.name }} \
-          ${{ inputs.url }} \
-          ${{ inputs.viewport }} \
-          ${{ inputs.full-page }} \
-          ${{ inputs.headless }} \
-          ${{ inputs.config }} \
-          -o ${{ inputs.output }}
+        npx snapdiff-cli capture           ${{ inputs.name }}           ${{ inputs.url }}           ${{ inputs.viewport }}           ${{ inputs.full-page }}           ${{ inputs.headless }}           ${{ inputs.config }}           -o ${{ inputs.output }}
     - name: Run snapdiff diff
       if: inputs.mode != 'capture'
       shell: bash
       run: |
-        npx snapdiff-cli diff \
-          ${{ inputs.name }} \
-          -t ${{ inputs.threshold }} \
-          ${{ inputs.viewport }} \
-          ${{ inputs.full-page }} \
-          ${{ inputs.headless }} \
-          ${{ inputs.config }} \
-          -o ${{ inputs.output }}
+        npx snapdiff-cli diff           ${{ inputs.name }}           -t ${{ inputs.threshold }}           ${{ inputs.viewport }}           ${{ inputs.full-page }}           ${{ inputs.headless }}           ${{ inputs.config }}           -o ${{ inputs.output }}
