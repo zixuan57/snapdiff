@@ -1,8 +1,7 @@
-﻿{
+{
   "name": "snapdiff",
   "private": true,
   "workspaces": [
-    "packages/core",
     "packages/cli"
   ],
   "scripts": {

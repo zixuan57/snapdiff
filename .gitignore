@@ -4,10 +4,12 @@ dist/
 .snapdiff/reports/
 *.log
 .DS_Store
-
 .snapdiff/
 .git-repo/
 test-import.ts
 .git-repo/
 _update_readme.py  
 snapdiff.skill.md  
+.test-*
+packages/action/node_modules/
+packages/action/dist/
